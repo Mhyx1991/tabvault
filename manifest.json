@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "TabVault",
+  "version": "1.1.0",
+  "description": "Organize tabs into groups, snapshot & undo anything, save memory. Workspaces, cleanup, search. 100% offline & private.",
+  "minimum_chrome_version": "114",
+  "icons": {
+    "16": "src/assets/icons/icon16.png",
+    "32": "src/assets/icons/icon32.png",
+    "48": "src/assets/icons/icon48.png",
+    "128": "src/assets/icons/icon128.png"
+  },
+  "action": {
+    "default_title": "TabVault",
+    "default_popup": "src/ui/popup.html",
+    "default_icon": {
+      "16": "src/assets/icons/icon16.png",
+      "32": "src/assets/icons/icon32.png",
+      "48": "src/assets/icons/icon48.png",
+      "128": "src/assets/icons/icon128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "src/ui/sidepanel.html"
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Open TabVault (popup or side panel)"
+    }
+  },
+  "options_ui": {
+    "page": "src/ui/dashboard.html",
+    "open_in_tab": true
+  },
+  "permissions": ["tabs", "tabGroups", "storage", "alarms", "favicon", "sidePanel"],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["_favicon/*"]
+    }
+  ]
+}

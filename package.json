@@ -1,0 +1,13 @@
+{
+  "name": "tabvault",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TabVault — smart, safe tab organization for Chrome. Local-first, no account, no cloud.",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.js\"",
+    "check": "node scripts/check.js",
+    "icons": "node scripts/make-icons.js",
+    "package": "node scripts/package.js"
+  }
+}

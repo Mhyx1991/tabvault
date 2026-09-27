@@ -1,0 +1,153 @@
+<!doctype html>
+<!-- Screenshot harness — same stub as dashboard.html but with store-ready
+     seed data, no QA branding, and ?view= / ?theme= URL params.
+     NOT shipped (lives in tests/). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TabVault</title>
+  <link rel="stylesheet" href="../../src/ui/dashboard.css">
+  <script>
+    // ---- chrome stub (must run before the deferred module script) ----
+    const params = new URLSearchParams(location.search);
+    const now = Date.now();
+    const day = 86400000;
+    const groups = new Map();
+    window.__qa = { clicks: [], errors: [] };
+    window.addEventListener('error', (e) => window.__qa.errors.push(String(e.message || e)));
+
+    // Two windows: a busy main window and a second window with research tabs.
+    const seedTabs = [
+      { id: 1, windowId: 1, index: 0, url: 'https://mail.google.com/mail/u/0/#inbox', title: 'Inbox (12) — Gmail', groupId: -1, pinned: true, active: false, lastAccessed: now - 40000 },
+      { id: 2, windowId: 1, index: 1, url: 'https://docs.google.com/document/d/quarterly-planning/edit', title: 'Q3 Planning — Quarterly Planning', groupId: -1, pinned: false, active: false, lastAccessed: now - 300000 },
+      { id: 3, windowId: 1, index: 2, url: 'https://calendar.google.com/calendar/u/0/r/week', title: 'Calendar — Week of 21 September', groupId: -1, pinned: false, active: false, lastAccessed: now - 200000 },
+      { id: 4, windowId: 1, index: 3, url: 'https://github.com/marcus/tabvault/pull/42', title: 'tabvault: PR #42 review', groupId: 501, pinned: false, active: false, lastAccessed: now - 120000 },
+      { id: 5, windowId: 1, index: 4, url: 'https://stackoverflow.com/questions/9999/typeerror-undefined', title: 'TypeError: cannot read properties of undefined', groupId: 501, pinned: false, active: false, lastAccessed: now - 300000 },
+      { id: 6, windowId: 1, index: 5, url: 'https://developer.chrome.com/docs/extensions/reference/sidePanel', title: 'sidePanel - Chrome Developers', groupId: 501, pinned: false, active: false, lastAccessed: now - 600000 },
+      { id: 7, windowId: 1, index: 6, url: 'https://www.youtube.com/watch?v=lofi', title: 'Lo-fi beats to code to', groupId: 502, pinned: false, active: false, lastAccessed: now - 3600000 },
+      { id: 8, windowId: 1, index: 7, url: 'https://open.spotify.com/playlist/focus', title: 'Deep Focus — Spotify', groupId: 502, pinned: false, active: false, lastAccessed: now - 7200000 },
+      { id: 9, windowId: 1, index: 8, url: 'https://www.amazon.de/dp/B0USBC-HUB', title: 'USB-C hub — Amazon', groupId: -1, pinned: false, active: false, lastAccessed: now - 3 * day },
+      { id: 10, windowId: 1, index: 9, url: 'https://news.ycombinator.com/', title: 'Hacker News', groupId: -1, pinned: false, active: true, lastAccessed: now - 60000 },
+      { id: 11, windowId: 2, index: 0, url: 'https://arxiv.org/abs/2401.12345', title: 'Attention Is All You Need revisited', groupId: -1, pinned: false, active: true, lastAccessed: now - 12 * day },
+      { id: 12, windowId: 2, index: 1, url: 'https://arxiv.org/abs/2401.12345', title: 'Attention Is All You Need revisited', groupId: -1, pinned: false, active: false, lastAccessed: now - 9 * day },
+      { id: 13, windowId: 2, index: 2, url: 'https://www.wikipedia.org/wiki/Attention_(machine_learning)', title: 'Attention (machine learning) — Wikipedia', groupId: -1, pinned: false, active: false, lastAccessed: now - 8 * day },
+      { id: 14, windowId: 2, index: 3, url: 'https://arxiv.org/abs/2401.12345', title: 'Attention Is All You Need revisited', groupId: -1, pinned: false, active: false, lastAccessed: now - 8 * day }
+    ];
+
+    const listener = { addListener() {} };
+    window.chrome = {
+      runtime: {
+        id: 'qa-test',
+        getURL: (p) => new URL(p || '/', location.href).href,
+        getManifest: () => ({ version: '1.1.0', manifest_version: 3 }),
+        onInstalled: listener, onStartup: listener, onMessage: listener
+      },
+      storage: {
+        local: {
+          _d: new Map(),
+          get: async (keys) => Object.fromEntries([].concat(keys).filter(k => window.chrome.storage.local._d.has(k)).map(k => [k, window.chrome.storage.local._d.get(k)])),
+          set: async (o) => { for (const [k, v] of Object.entries(o)) window.chrome.storage.local._d.set(k, v); },
+          remove: async (keys) => { for (const k of [].concat(keys)) window.chrome.storage.local._d.delete(k); }
+        },
+        sync: {
+          _d: new Map(),
+          get: async (keys) => Object.fromEntries([].concat(keys).filter(k => window.chrome.storage.sync._d.has(k)).map(k => [k, window.chrome.storage.sync._d.get(k)])),
+          set: async (o) => { for (const [k, v] of Object.entries(o)) window.chrome.storage.sync._d.set(k, v); },
+          remove: async (keys) => { for (const k of [].concat(keys)) window.chrome.storage.sync._d.delete(k); }
+        }
+      },
+      alarms: { create: async () => {}, onAlarm: listener },
+      action: { setBadgeText: async ({ text }) => { window.__qa.badge = text; }, setBadgeBackgroundColor: async () => {}, setTitle: async ({ title }) => { window.__qa.badgeTitle = title; } },
+      tabs: {
+        query: async () => seedTabs.map(t => ({ ...t })),
+        get: async (id) => { const t = seedTabs.find(x => x.id === id); if (!t) throw new Error('No tab ' + id); return { ...t }; },
+        create: async (p) => ({ id: 100 + Math.floor(Math.random() * 1000), ...p }),
+        group: async ({ tabIds }) => { const gid = 500 + groups.size; groups.set(gid, { id: gid, title: '', color: 'grey', windowId: 1 }); return gid; },
+        ungroup: async () => {},
+        update: async (id, props) => ({ id, ...props }),
+        remove: async () => {},
+        move: async () => {},
+        onCreated: listener, onUpdated: listener, onRemoved: listener, onMoved: listener, onAttached: listener, onDetached: listener
+      },
+      tabGroups: { query: async () => [...groups.values()], update: async (id, p) => Object.assign(groups.get(id) || {}, p), onUpdated: listener, onRemoved: listener },
+      windows: {
+        getAll: async () => [
+          { id: 1, type: 'normal', state: 'normal', incognito: false, focused: true },
+          { id: 2, type: 'normal', state: 'normal', incognito: false, focused: false }
+        ],
+        getLastFocused: async () => ({ id: 1 }),
+        create: async (p) => ({ id: 9, ...p }),
+        update: async () => {},
+        onCreated: listener, onRemoved: listener
+      }
+    };
+
+    // ---- Pre-seed: onboarded, tutorial done, organized state, rules ----
+    const _set = window.chrome.storage.local.set;
+    // User rules so the seeded tabs classify into clean, colorful groups.
+    window.chrome.storage.local._d.set('settings', {
+      theme: params.get('theme') || 'dark',
+      onboarded: true,
+      tutorialDone: true,
+      autoSnapshot: true,
+      staleDays: 7,
+      minConfidence: 'medium',
+      domainRules: {
+        'mail.google.com': 'work',
+        'docs.google.com': 'work',
+        'calendar.google.com': 'work',
+        'github.com': 'development',
+        'stackoverflow.com': 'development',
+        'developer.chrome.com': 'development',
+        'youtube.com': 'entertainment',
+        'open.spotify.com': 'entertainment',
+        'amazon.de': 'shopping',
+        'news.ycombinator.com': 'news',
+        'arxiv.org': 'research',
+        'wikipedia.org': 'research'
+      }
+    });
+    window.chrome.storage.local._d.set('meta', {
+      installedAt: now - 21 * day,
+      lastSnapshotAt: now - 3600000,
+      lastOrganize: { snapshotId: 'seed-snap-1', at: now - 3600000, tabsGrouped: 5, groups: 2 }
+    });
+  </script>
+  <script type="module" src="./shots-boot.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="#2563EB"/><circle cx="16" cy="16" r="7.4" stroke="#fff" stroke-width="2.6"/><rect x="14.6" y="11.4" width="2.8" height="9.2" rx="1.4" fill="#fff"/></svg>
+        </span>
+        <span class="brand-name">TABVAULT</span>
+      </div>
+      <div class="searchbar" id="searchbar">
+        <span class="search-icon" aria-hidden="true" data-icon="search"></span>
+        <input id="global-search" type="search" placeholder="Search tabs and workspaces…" autocomplete="off" spellcheck="false" aria-label="Search tabs and workspaces">
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
+        <div id="search-results" class="search-results" role="listbox" aria-label="Search results" hidden></div>
+      </div>
+      <div class="topbar-right">
+        <span id="protection-chip" class="protect-chip" title="Protection status"></span>
+      </div>
+    </header>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <button class="nav-item" data-view="overview">Overview</button>
+      <button class="nav-item" data-view="suggestions">Suggestions<span class="nav-count" id="nav-suggest" hidden></span></button>
+      <button class="nav-item" data-view="workspaces">Workspaces</button>
+      <button class="nav-item" data-view="history">History</button>
+      <button class="nav-item" data-view="care">Duplicates &amp; Stale<span class="nav-count" id="nav-care" hidden></span></button>
+      <button class="nav-item" data-view="settings">Settings</button>
+      <button class="nav-item" data-view="privacy">Privacy</button>
+    </nav>
+    <main id="view" class="view" tabindex="-1" aria-live="polite"></main>
+    <footer class="footer">
+      <span>TabVault v<span id="app-version">?</span></span>
+      <span id="storage-status" class="footer-status"></span>
+    </footer>
+  </div>
+</body>
+</html>

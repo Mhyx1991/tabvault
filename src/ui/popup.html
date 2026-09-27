@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TabVault</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header class="popup-head">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="30" height="30" rx="8" fill="#2563EB"/>
+            <circle cx="16" cy="16" r="7.4" stroke="#fff" stroke-width="2.6"/>
+            <rect x="14.6" y="11.4" width="2.8" height="9.2" rx="1.4" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="brand-name">TABVAULT</span>
+      </div>
+      <div id="popup-stats" class="popup-stats"></div>
+    </header>
+
+    <div class="popup-search">
+      <span class="search-icon" aria-hidden="true" data-icon="search"></span>
+      <input id="popup-search" type="search" placeholder="Search tabs…" autocomplete="off" spellcheck="false" aria-label="Search open tabs">
+    </div>
+
+    <div id="popup-results" class="popup-results" role="listbox" aria-label="Search results"></div>
+
+    <div id="popup-panel" class="popup-panel" hidden></div>
+
+    <div class="popup-actions" id="popup-actions">
+      <button id="popup-organize" class="btn btn-primary btn-block">Organize My Tabs</button>
+      <button id="popup-stash" class="btn btn-secondary btn-block" style="margin-top:6px">📌 Stash all tabs</button>
+      <div class="popup-links">
+        <button class="link-btn" id="popup-sidepanel">📌 Pin Panel</button>
+        <button class="link-btn" data-nav="overview">Dashboard</button>
+        <button class="link-btn" data-nav="workspaces">Workspaces</button>
+        <button class="link-btn" data-nav="history">History</button>
+        <button class="link-btn" data-nav="care">Cleanup</button>
+        <button class="link-btn" data-nav="settings">Settings</button>
+        <button id="popup-undo" class="link-btn undo" hidden>Undo</button>
+      </div>
+    </div>
+
+    <footer class="popup-status">
+      <span id="popup-protection" class="protect-chip"></span>
+    </footer>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

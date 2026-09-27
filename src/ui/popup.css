@@ -1,0 +1,76 @@
+/* Popup layout (design tokens come from dashboard.css). */
+
+body { width: 400px; }
+
+.popup { display: flex; flex-direction: column; min-height: 480px; max-height: 580px; }
+
+.popup-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 8px;
+}
+.popup-stats { display: flex; gap: 10px; color: var(--text-muted); font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.popup-stats b { color: var(--text); }
+
+.popup-search {
+  display: flex; align-items: center; gap: 6px;
+  margin: 4px 14px 8px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 7px 10px;
+}
+.popup-search:focus-within { border-color: var(--accent); }
+.popup-search input { flex: 1; border: none; background: transparent; outline: none; min-width: 0; }
+
+.popup-results {
+  flex: 1; overflow: auto; min-height: 120px;
+  padding: 0 8px;
+}
+.popup-results .tab-row { width: 100%; text-align: left; border-radius: 8px; }
+.popup-results .tab-row:hover, .popup-results .tab-row:focus-visible { background: var(--surface-2); outline: none; }
+
+/* per-row close (✕) — hidden until hover/keyboard focus keeps the list calm */
+.tab-close-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  opacity: 0; transition: opacity .12s ease, background .12s ease;
+  flex-shrink: 0;
+}
+.tab-row:hover .tab-close-btn,
+.tab-row:focus-within .tab-close-btn { opacity: 1; }
+.tab-close-btn:hover { background: var(--border, rgba(128,128,128,.25)); color: var(--text); }
+.tab-close-btn:focus-visible { opacity: 1; outline: 2px solid var(--accent); }
+
+/* rows that are divs (contain the nested ✕ button) behave like the button rows */
+div.tab-row { cursor: pointer; align-items: center; }
+.popup-hint { color: var(--text-faint); font-size: 12.5px; padding: 10px; text-align: center; }
+.search-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-faint); padding: 8px 10px 4px;
+}
+
+.popup-panel { padding: 0 14px; overflow: auto; max-height: 300px; }
+.popup-panel .suggest-list { max-height: 200px; border: 1px solid var(--border); border-radius: 8px; }
+
+.popup-actions { padding: 10px 14px 6px; }
+
+/* bar shown while tabs are marked for closing (✕) — flushed when popup closes */
+.popup-closebar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin: 8px 14px 0; padding: 7px 10px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+  font-size: 12.5px; color: var(--text-muted);
+  animation: closebar-in .15s ease;
+}
+@keyframes closebar-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.closebar-count { font-weight: 600; color: var(--text); }
+.popup-links { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; justify-content: center; }
+.link-btn {
+  color: var(--text-muted); font-size: 12.5px; padding: 4px 8px; border-radius: 6px;
+}
+.link-btn:hover { background: var(--surface-2); color: var(--text); }
+.link-btn.undo { color: var(--accent); font-weight: 600; }
+
+.popup-status {
+  padding: 8px 14px 10px; border-top: 1px solid var(--border);
+  display: flex; justify-content: center;
+}
+
+body { background: var(--surface); }

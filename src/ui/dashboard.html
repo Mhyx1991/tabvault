@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TabVault — Organize your tabs</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="30" height="30" rx="8" fill="#2563EB"/>
+            <circle cx="16" cy="16" r="7.4" stroke="#fff" stroke-width="2.6"/>
+            <rect x="14.6" y="11.4" width="2.8" height="9.2" rx="1.4" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="brand-name">TABVAULT</span>
+        <span class="brand-tag">Organize your tabs. Keep what matters.</span>
+      </div>
+      <div class="searchbar" id="searchbar">
+        <span class="search-icon" aria-hidden="true" data-icon="search"></span>
+        <input id="global-search" type="search" placeholder="Search tabs and workspaces…"
+               autocomplete="off" spellcheck="false" aria-label="Search tabs and workspaces">
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
+        <div id="search-results" class="search-results" role="listbox" aria-label="Search results" hidden></div>
+      </div>
+      <div class="topbar-right">
+        <span id="protection-chip" class="protect-chip" title="Protection status"></span>
+      </div>
+    </header>
+
+    <nav class="nav" id="nav" aria-label="Sections">
+      <button class="nav-item" data-view="overview">Overview</button>
+      <button class="nav-item" data-view="suggestions">Suggestions<span class="nav-count" id="nav-suggest" hidden></span></button>
+      <button class="nav-item" data-view="workspaces">Workspaces</button>
+      <button class="nav-item" data-view="history">History</button>
+      <button class="nav-item" data-view="care">Duplicates &amp; Stale<span class="nav-count" id="nav-care" hidden></span></button>
+      <button class="nav-item" data-view="settings">Settings</button>
+      <button class="nav-item" data-view="privacy">Privacy</button>
+    </nav>
+
+    <main id="view" class="view" tabindex="-1" aria-live="polite"></main>
+
+    <footer class="footer">
+      <span>TabVault v<span id="app-version">?</span> · Your browsing data stays on this device</span>
+      <span id="storage-status" class="footer-status"></span>
+    </footer>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>
